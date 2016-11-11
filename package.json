@@ -1,0 +1,21 @@
+{
+  "name": "run-and-jump-rxjs",
+  "version": "0.1.0",
+  "description": "Run and Jump game with RxJS",
+  "main": "index.js",
+  "author": "Albert Gonzalez (albert.glez.mld@gmail.com)",
+  "license": "MIT",
+  "scripts": {
+    "webpack": "./node_modules/.bin/webpack",
+    "webpack-server": "./node_modules/.bin/webpack-dev-server",
+    "start": "npm run webpack-server --progress"
+  },
+  "dependencies": {
+    "babel-core": "^6.18.2",
+    "babel-loader": "^6.2.7",
+    "babel-preset-es2015": "^6.18.0",
+    "rxjs": "^5.0.0-rc.2",
+    "webpack": "^1.13.3",
+    "webpack-dev-server": "^1.16.2"
+  }
+}
