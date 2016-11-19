@@ -1,9 +1,8 @@
-import {Obstacle} from "./model/obstacle";
-import {MainCharacter} from "./model/main-character";
-import {Observable} from "rxjs/bundles/Rx";
-import {Scheduler} from "rxjs/bundles/Rx"
-import {Ground} from "./model/ground";
-import {PointCounter} from "./model/point-counter";
+import { Obstacle } from "./model/obstacle";
+import { MainCharacter } from "./model/main-character";
+import { Ground } from "./model/ground";
+import { PointCounter } from "./model/point-counter";
+import { loop, input, pointCounterUpdates, gameInput } from "./observable/observable";
 
 let canvas = document.getElementById("game");
 let ctx = canvas.getContext("2d");
@@ -13,36 +12,10 @@ let ground = new Ground(canvas);
 let pointCounter = new PointCounter(canvas);
 let level = 1;
 
-const TICKER_INTERVAL = 17;
 const SPACE_KEY = 32;
 const ENTER_KEY = 13;
 
-const gameLoop = Observable
-    .interval(TICKER_INTERVAL, Scheduler.requestAnimationFrame)
-    .map(() => ({
-        time: Date.now(),
-        deltaTime: null
-    }))
-    .filter(() => !isGameOver())
-    .scan(
-        (previous, current) => ({
-            time: current.time,
-            deltaTime: (current.time - previous.time) / 1000
-        })
-    );
-
-const input = Observable.merge(
-    Observable.fromEvent(document, 'keydown',
-        event => event.keyCode == SPACE_KEY || event.keyCode == ENTER_KEY ? event.keyCode : false
-    ),
-    Observable.fromEvent(document, 'keyup', event => false),
-    Observable.create((subscriber) => {subscriber.next(false); subscriber.complete(); })
-);
-
-const pointCounterUpdates = Observable.interval(1000).timeInterval();
-
-const gameInput = gameLoop
-    .withLatestFrom(input);
+const gameLoop = loop.filter(() => !isGameOver());
 
 const mainCharacterJump = gameInput
     .filter(([ticker, keyPressed]) => keyPressed === SPACE_KEY);
