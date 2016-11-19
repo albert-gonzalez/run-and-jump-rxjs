@@ -2,7 +2,7 @@ import { Obstacle } from "./model/obstacle";
 import { MainCharacter } from "./model/main-character";
 import { Ground } from "./model/ground";
 import { PointCounter } from "./model/point-counter";
-import { loop, input, pointCounterUpdates, gameInput } from "./observable/observable";
+import { loop, input, pointCounterUpdates, gameInput } from "./reactive/streams";
 
 let canvas = document.getElementById("game");
 let ctx = canvas.getContext("2d");
