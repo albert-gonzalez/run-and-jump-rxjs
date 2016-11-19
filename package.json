@@ -2,7 +2,7 @@
   "name": "run-and-jump-rxjs",
   "version": "0.1.0",
   "description": "Run and Jump game with RxJS",
-  "main": "index.js",
+  "main": "index.html",
   "author": "Albert Gonzalez (albert.glez.mld@gmail.com)",
   "license": "MIT",
   "scripts": {
