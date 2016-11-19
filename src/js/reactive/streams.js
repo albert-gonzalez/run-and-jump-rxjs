@@ -25,7 +25,4 @@ const input = Observable.merge(
 
 const pointCounterUpdates = Observable.interval(1000).timeInterval();
 
-const gameInput = loop
-    .withLatestFrom(input);
-
-export { loop, input, pointCounterUpdates, gameInput };
+export { loop, input, pointCounterUpdates };

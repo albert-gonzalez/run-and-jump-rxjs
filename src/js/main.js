@@ -2,7 +2,11 @@ import { Obstacle } from "./model/obstacle";
 import { MainCharacter } from "./model/main-character";
 import { Ground } from "./model/ground";
 import { PointCounter } from "./model/point-counter";
-import { loop, input, pointCounterUpdates, gameInput } from "./reactive/streams";
+import { loop, input, pointCounterUpdates } from "./reactive/streams";
+
+const INIT_LEVEL = 1;
+const SPACE_KEY = 32;
+const ENTER_KEY = 13;
 
 let canvas = document.getElementById("game");
 let ctx = canvas.getContext("2d");
@@ -10,12 +14,10 @@ let obstacle = new Obstacle(canvas);
 let mainCharacter = new MainCharacter(canvas);
 let ground = new Ground(canvas);
 let pointCounter = new PointCounter(canvas);
-let level = 1;
-
-const SPACE_KEY = 32;
-const ENTER_KEY = 13;
+let level = INIT_LEVEL;
 
 const gameLoop = loop.filter(() => !isGameOver());
+const gameInput = gameLoop.withLatestFrom(input);
 
 const mainCharacterJump = gameInput
     .filter(([ticker, keyPressed]) => keyPressed === SPACE_KEY);
@@ -29,6 +31,7 @@ function initGame() {
     mainCharacter.x = 20;
     mainCharacter.y = canvas.height - mainCharacter.height - ground.height;
     pointCounter.points = 0;
+    level = INIT_LEVEL;
 }
 
 function makeJumpMainCharacter() {
@@ -89,3 +92,6 @@ gameLoop.subscribe(moveObstacles);
 pointCounterUpdates.subscribe(increasePointCounter);
 gameLoop.subscribe(render);
 gameReset.subscribe(initGame);
+
+
+
