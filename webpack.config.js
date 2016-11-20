@@ -21,6 +21,10 @@ module.exports = {
                 test: /\.png/,
                 exclude: /(node_modules|bower_components)/,
                 loader: 'file-loader'
+            },
+            {
+                test: /\.scss$/,
+                loaders: ["style", "css", "sass"]
             }
         ]
     }

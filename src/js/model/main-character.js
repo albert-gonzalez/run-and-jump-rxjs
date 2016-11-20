@@ -1,6 +1,6 @@
 import { Sprite } from "./sprite";
 
-const maxJumpHeight = 120;
+const maxJumpHeight = 100;
 const sourceConfig = {
     width: 74,
     height: 96,

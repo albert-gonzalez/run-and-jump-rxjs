@@ -11,7 +11,7 @@ export class Ground extends Rectangle {
     render(x, y) {
         this.context.save();
         this.context.translate(this.translate, 0);
-        this.translate = (this.translate - 5) % 100;
+        this.translate = (this.translate - 2) % 48;
         super.render(x, y);
 
         this.context.restore();

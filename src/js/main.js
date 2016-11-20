@@ -4,8 +4,10 @@ import { Ground } from "./model/ground";
 import { PointCounter } from "./model/point-counter";
 import { loop, input, pointCounterUpdates } from "./reactive/streams";
 
-const INIT_LEVEL = 3;
-const MAX_LEVEL = 4;
+require("../css/main.scss");
+
+const INIT_LEVEL = 1;
+const MAX_LEVEL = 5;
 const SPACE_KEY = 32;
 const ENTER_KEY = 13;
 
