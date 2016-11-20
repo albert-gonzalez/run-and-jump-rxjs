@@ -3,6 +3,8 @@ import { MainCharacter } from "./model/main-character";
 import { Ground } from "./model/ground";
 import { PointCounter } from "./model/point-counter";
 import { loop, input, pointCounterUpdates } from "./reactive/streams";
+import {notifyGameOver} from "./reactive/streams";
+import {GameOverText} from "./model/game-over-text";
 
 require("../css/main.scss");
 
@@ -18,8 +20,10 @@ let mainCharacter = new MainCharacter(canvas);
 let ground = new Ground(canvas);
 let pointCounter = new PointCounter(canvas);
 let level = INIT_LEVEL;
+let isGameOver = false;
+let gameOverText = new GameOverText(canvas);
 
-const gameLoop = loop.filter(() => !isGameOver());
+const gameLoop = loop.filter(() => !isGameOver);
 const gameInput = gameLoop.withLatestFrom(input);
 
 const mainCharacterJump = gameInput
@@ -35,6 +39,8 @@ function initGame() {
     mainCharacter.y = canvas.height - mainCharacter.height - ground.height;
     pointCounter.points = 0;
     level = INIT_LEVEL;
+    isGameOver = false;
+    gameOverText.hide();
 }
 
 function makeJumpMainCharacter() {
@@ -64,11 +70,18 @@ function moveObstacles(ticker) {
     }
 }
 
-function isGameOver() {
-    return mainCharacter.x + mainCharacter.width/2 >= obstacle.x &&
+function checkGameOver() {
+    let collision = mainCharacter.x + mainCharacter.width/2 >= obstacle.x &&
         mainCharacter.x <= obstacle.x + obstacle.width/2 &&
         mainCharacter.y + mainCharacter.height/2 >= obstacle.y &&
         mainCharacter.y <= obstacle.y + obstacle.height/2;
+
+    if (collision) {
+        mainCharacter.setAction('death');
+        gameOverText.show();
+
+        notifyGameOver.subscribe(() => isGameOver = true);
+    }
 }
 
 function increasePointCounter() {
@@ -82,6 +95,7 @@ function render() {
     obstacle.render();
     mainCharacter.render();
     pointCounter.render();
+    gameOverText.render();
 }
 
 function clearCanvas() {
@@ -94,6 +108,7 @@ initGame();
 mainCharacterJump.subscribe(makeJumpMainCharacter);
 gameInput.subscribe(moveMainCharacter);
 gameLoop.subscribe(moveObstacles);
+gameLoop.subscribe(checkGameOver);
 pointCounterUpdates.subscribe(increasePointCounter);
 gameLoop.subscribe(render);
 gameReset.subscribe(initGame);

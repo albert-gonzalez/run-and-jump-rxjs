@@ -1,5 +1,8 @@
-export class PointCounter {
+import { Text } from './text';
+
+export class PointCounter extends Text {
     constructor(canvas) {
+        super(canvas, 20);
         this.canvas = canvas;
         this.x = canvas.width - 250;
         this.y = 40;
@@ -12,13 +15,6 @@ export class PointCounter {
     }
 
     render() {
-        this.context.beginPath();
-        this.context.fillStyle = 'white';
-        this.context.shadowOffsetX = 1;
-        this.context.shadowOffsetY = 1;
-        this.context.shadowColor = 'black';
-        this.context.font = '20px "Press Start 2P"';
-        this.context.fillText(`Score: ${this.points.toString()}`, this.x, this.y);
-        this.context.closePath();
+        super.render(`Score: ${this.points.toString()}`);
     }
 }

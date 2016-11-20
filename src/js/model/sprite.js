@@ -6,7 +6,9 @@ export class Sprite {
         this.image.src = sourceOptions.image;
         this.sourceOptions = sourceOptions;
         this.width = width;
+        this.defaultWidth = width;
         this.height = height;
+        this.defaultHeight = height;
         this.setAction(sourceOptions.defaultAction);
     }
 
@@ -18,8 +20,8 @@ export class Sprite {
             this.image,
             this.currentFrame * this.sourceOptions.width,
             this.action.y,
-            this.sourceOptions.width,
-            this.sourceOptions.height,
+            this.action.width || this.sourceOptions.width,
+            this.action.height || this.sourceOptions.height,
             this.x,
             this.y,
             this.width,
@@ -43,5 +45,17 @@ export class Sprite {
         this.action = this.sourceOptions.actions[action];
         this.currentCycle = 0;
         this.currentFrame = 0;
+
+        if (this.action.width) {
+            this.width = this.action.width;
+        } else {
+            this.width = this.defaultWidth;
+        }
+
+        if (this.action.height) {
+            this.height = this.action.height;
+        } else {
+            this.height = this.defaultHeight;
+        }
     }
 }

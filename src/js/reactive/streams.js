@@ -25,4 +25,6 @@ const input = Observable.merge(
 
 const pointCounterUpdates = Observable.interval(1000).timeInterval();
 
-export { loop, input, pointCounterUpdates };
+const notifyGameOver = Observable.range(0,1).delay(10);
+
+export { loop, input, pointCounterUpdates, notifyGameOver };

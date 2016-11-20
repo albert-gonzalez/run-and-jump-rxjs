@@ -7,8 +7,9 @@ const sourceConfig = {
     image: '../../../assets/sprites/bonk.png',
     frameSpeed: 10,
     actions: {
-        jump: {length: 3, y: 203, auto: false},
-        run: {length: 4, y: 103, auto: true}
+        jump: { length: 3, y: 203, auto: false },
+        run: { length: 4, y: 103, auto: true },
+        death: { length: 1, y: 0, auto: false, width: 92}
     },
     defaultAction: 'run'
 };
@@ -17,8 +18,8 @@ export class MainCharacter extends Sprite {
     constructor(canvas) {
         super(
             canvas,
-            70,
-            80,
+            74,
+            96,
             sourceConfig
         );
     }
