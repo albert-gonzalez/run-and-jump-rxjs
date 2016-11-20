@@ -1,8 +1,6 @@
-import {Circle} from "./circle";
-import {Rectangle} from "./rectangle";
-import {Sprite} from "./sprite";
+import { Sprite } from "./sprite";
 
-const maxJumpHeight = 160;
+const maxJumpHeight = 120;
 const sourceConfig = {
     width: 74,
     height: 96,
@@ -31,6 +29,7 @@ export class MainCharacter extends Sprite {
             this.setAction('jump');
             this.currentJumpHeight = 0.0;
             this.currentDirection = 'up';
+            this.initY = this.y;
         }
     }
 
@@ -59,7 +58,7 @@ export class MainCharacter extends Sprite {
             if (this.currentJumpHeight <= 0) {
                 this.jumping = false;
                 this.setAction('run');
-                this.y = this.canvas.height - this.height - 20;
+                this.y = this.initY;
             }
 
         }

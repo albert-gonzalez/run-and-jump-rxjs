@@ -13,6 +13,8 @@ export class PointCounter {
 
     render() {
         this.context.beginPath();
+        this.context.fillStyle = 'black';
         this.context.fillText(this.points, this.x, this.y);
+        this.context.closePath();
     }
 }

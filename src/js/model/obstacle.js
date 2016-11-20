@@ -1,8 +1,24 @@
-import {Rectangle} from "./rectangle";
+import { Sprite } from "./sprite";
 
-export class Obstacle extends Rectangle{
+const sourceConfig = {
+    width: 72,
+    height: 47,
+    image: '../../../assets/sprites/dino.png',
+    frameSpeed: 10,
+    actions: {
+        run: {length: 3, y: 0, auto: true}
+    },
+    defaultAction: 'run'
+};
+
+export class Obstacle extends Sprite {
     constructor(canvas) {
-        super(canvas, 20, 50);
+        super(
+            canvas,
+            105,
+            70,
+            sourceConfig
+        );
     }
 
     isOutOfCanvas() {

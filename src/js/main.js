@@ -4,7 +4,8 @@ import { Ground } from "./model/ground";
 import { PointCounter } from "./model/point-counter";
 import { loop, input, pointCounterUpdates } from "./reactive/streams";
 
-const INIT_LEVEL = 1;
+const INIT_LEVEL = 3;
+const MAX_LEVEL = 4;
 const SPACE_KEY = 32;
 const ENTER_KEY = 13;
 
@@ -44,28 +45,28 @@ function moveMainCharacter([ticker]) {
 
 function respawnObstacle(obstacle, canvas) {
     obstacle.x = canvas.width;
-    obstacle.y = canvas.height - obstacle.height - 20;
+    obstacle.y = canvas.height - obstacle.height - ground.height;
 }
 
 function moveObstacles(ticker) {
     if (obstacle.isOutOfCanvas()) {
         if (Math.random() > 0.98) {
-            if (level < 3) {
+            if (level < MAX_LEVEL) {
                 level += 0.1;
             }
 
             respawnObstacle(obstacle, canvas);
         }
     } else {
-        obstacle.move(-100 * level * ticker.deltaTime, 0);
+        obstacle.move(-120 * level * ticker.deltaTime, 0);
     }
 }
 
 function isGameOver() {
-    return mainCharacter.x + mainCharacter.width >= obstacle.x &&
-        mainCharacter.x <= obstacle.x + obstacle.width &&
-        mainCharacter.y + mainCharacter.height >= obstacle.y &&
-        mainCharacter.y <= obstacle.y + obstacle.height;
+    return mainCharacter.x + mainCharacter.width/2 >= obstacle.x &&
+        mainCharacter.x <= obstacle.x + obstacle.width/2 &&
+        mainCharacter.y + mainCharacter.height/2 >= obstacle.y &&
+        mainCharacter.y <= obstacle.y + obstacle.height/2;
 }
 
 function increasePointCounter() {
@@ -83,6 +84,8 @@ function render() {
 
 function clearCanvas() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = 'rgb(0, 117, 255)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
 }
 
 initGame();
