@@ -2,10 +2,9 @@ import { Obstacle } from "./model/obstacle";
 import { MainCharacter } from "./model/main-character";
 import { Ground } from "./model/ground";
 import { PointCounter } from "./model/point-counter";
-import { loop, input, pointCounterUpdates } from "./reactive/streams";
-import {notifyGameOver} from "./reactive/streams";
-import {GameOverText} from "./model/game-over-text";
-import {Observable} from "rxjs/bundles/Rx";
+import { loop, input, pointCounterUpdates, notifyGameOver } from "./reactive/streams";
+import { GameOverText } from "./model/game-over-text";
+import { Observable } from "rxjs/bundles/Rx";
 
 require("../css/main.scss");
 

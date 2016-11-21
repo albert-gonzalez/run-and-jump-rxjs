@@ -6,7 +6,7 @@
   "author": "Albert Gonzalez (albert.glez.mld@gmail.com)",
   "license": "MIT",
   "scripts": {
-    "webpack": "./node_modules/.bin/webpack",
+    "webpack": "./node_modules/.bin/webpack --optimize-minimize",
     "webpack-server": "./node_modules/.bin/webpack-dev-server",
     "start": "npm run webpack-server --progress"
   },

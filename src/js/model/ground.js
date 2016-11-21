@@ -1,5 +1,4 @@
-import {Rectangle} from "./rectangle";
-import {Sprite} from "./sprite";
+import { Sprite } from "./sprite";
 
 const sourceConfig = {
     width: 24,
