@@ -28,11 +28,13 @@ export class Sprite {
             this.height
         );
 
-        this.currentCycle++;
+        if (this.action.auto) {
+            this.currentCycle++;
 
-        if (this.action.auto && this.currentCycle >= this.sourceOptions.frameSpeed) {
-            this.currentCycle = 0;
-            this.currentFrame = (this.currentFrame + 1) % this.action.length
+            if (this.currentCycle >= this.sourceOptions.frameSpeed) {
+                this.currentCycle = 0;
+                this.currentFrame = (this.currentFrame + 1) % this.action.length
+            }
         }
     }
 
@@ -47,13 +49,13 @@ export class Sprite {
         this.currentFrame = 0;
 
         if (this.action.width) {
-            this.width = this.action.width;
+            this.width = this.action.width * this.scale;
         } else {
             this.width = this.defaultWidth;
         }
 
         if (this.action.height) {
-            this.height = this.action.height;
+            this.height = this.action.height * this.scale;
         } else {
             this.height = this.defaultHeight;
         }

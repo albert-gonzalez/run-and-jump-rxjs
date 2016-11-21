@@ -9,6 +9,7 @@ export class Rectangle {
         if (patternImg) {
             let image = new Image();
             image.src = patternImg;
+            image.height = height;
             image.onload = () => {
                 this.color = this.context.createPattern(image, 'repeat');
             };

@@ -12,13 +12,15 @@ const sourceConfig = {
 };
 
 export class Obstacle extends Sprite {
-    constructor(canvas) {
+    constructor(canvas, scale) {
         super(
             canvas,
-            105,
-            70,
+            105 * scale,
+            70 * scale,
             sourceConfig
         );
+
+        this.scale = scale;
     }
 
     isOutOfCanvas() {

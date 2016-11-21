@@ -14,14 +14,17 @@ const SPACE_KEY = 32;
 const ENTER_KEY = 13;
 
 let canvas = document.getElementById("game");
+let scale = calculateScale();
 let ctx = canvas.getContext("2d");
-let obstacle = new Obstacle(canvas);
-let mainCharacter = new MainCharacter(canvas);
-let ground = new Ground(canvas);
-let pointCounter = new PointCounter(canvas);
+let obstacle = new Obstacle(canvas, scale);
+let mainCharacter = new MainCharacter(canvas, scale);
+let ground = new Ground(canvas, scale);
+let pointCounter = new PointCounter(canvas, scale);
 let level = INIT_LEVEL;
 let isGameOver = false;
-let gameOverText = new GameOverText(canvas);
+let gameOverText = new GameOverText(canvas, scale);
+
+console.log(scale);
 
 const gameLoop = loop.filter(() => !isGameOver);
 const gameInput = gameLoop.withLatestFrom(input);
@@ -34,13 +37,17 @@ const gameReset = input
 
 function initGame() {
     respawnObstacle(obstacle, canvas);
-    mainCharacter = new MainCharacter(canvas);
-    mainCharacter.x = 20;
+    mainCharacter = new MainCharacter(canvas, scale);
+    mainCharacter.x = 20 * scale;
     mainCharacter.y = canvas.height - mainCharacter.height - ground.height;
     pointCounter.points = 0;
     level = INIT_LEVEL;
     isGameOver = false;
     gameOverText.hide();
+}
+
+function calculateScale() {
+    return canvas.width / 400;
 }
 
 function makeJumpMainCharacter() {
@@ -66,7 +73,7 @@ function moveObstacles(ticker) {
             respawnObstacle(obstacle, canvas);
         }
     } else {
-        obstacle.move(-120 * level * ticker.deltaTime, 0);
+        obstacle.move(-120 * level * ticker.deltaTime * scale, 0);
     }
 }
 
@@ -99,7 +106,6 @@ function render() {
 }
 
 function clearCanvas() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.fillStyle = 'rgb(0, 117, 255)';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 }

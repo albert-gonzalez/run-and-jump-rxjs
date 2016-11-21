@@ -15,13 +15,14 @@ const sourceConfig = {
 };
 
 export class MainCharacter extends Sprite {
-    constructor(canvas) {
+    constructor(canvas, scale) {
         super(
             canvas,
-            74,
-            96,
+            74 * scale,
+            96 * scale,
             sourceConfig
         );
+        this.scale = scale;
     }
 
     jump() {
@@ -37,7 +38,7 @@ export class MainCharacter extends Sprite {
     moveToNextPosition(deltaTime) {
         if (this.jumping) {
             let movement;
-            if (this.currentJumpHeight >= maxJumpHeight) {
+            if (this.currentJumpHeight >= maxJumpHeight * this.scale) {
                 this.currentDirection = 'down';
                 this.currentFrame = 2;
             }
@@ -52,9 +53,10 @@ export class MainCharacter extends Sprite {
                 movement = +200 * deltaTime;
             }
 
-            movement = Math.floor(movement);
+            movement = Math.floor(movement) * this.scale;
             this.move(0, movement);
             this.currentJumpHeight -= movement;
+            console.log(movement);
 
             if (this.currentJumpHeight <= 0) {
                 this.jumping = false;

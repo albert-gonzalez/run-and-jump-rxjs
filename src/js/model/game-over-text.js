@@ -1,9 +1,9 @@
 import { Text } from './text';
 
 export class GameOverText extends Text {
-    constructor(canvas) {
-        super(canvas, 11);
-        this.x = 25;
+    constructor(canvas, scale) {
+        super(canvas, 11 * scale);
+        this.x = 25 * scale;
         this.y = canvas.height / 2;
         this.visible = false;
     }
