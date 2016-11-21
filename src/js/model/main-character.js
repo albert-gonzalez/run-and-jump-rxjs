@@ -1,6 +1,6 @@
 import { Sprite } from "./sprite";
 
-const maxJumpHeight = 100;
+const maxJumpHeight = 85;
 const sourceConfig = {
     width: 74,
     height: 96,
@@ -56,7 +56,6 @@ export class MainCharacter extends Sprite {
             movement = Math.floor(movement) * this.scale;
             this.move(0, movement);
             this.currentJumpHeight -= movement;
-            console.log(movement);
 
             if (this.currentJumpHeight <= 0) {
                 this.jumping = false;

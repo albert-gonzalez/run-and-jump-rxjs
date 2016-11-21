@@ -1,10 +1,43 @@
 @import "~foundation-sites/scss/foundation";
 
-@include foundation-everything;
+@include foundation-global-styles;
+@include foundation-grid;
+@include foundation-typography;
 
 body {
 }
 
 h1 {
   font-family: 'Press Start 2P', cursive;
+}
+
+.game-container {
+  background: #eeefdf;
+  padding: 1em 0;
+  margin-bottom: 1em;
+
+  @include breakpoint(medium) {
+    margin-top: 2em;
+  }
+
+  canvas {
+    width: 100%;
+    min-width: 300px;
+  }
+}
+
+.footer {
+  border-top: 1px solid #e5e5e5;
+  margin-top: 1em;
+  padding: 1em 0;
+
+  .row {
+    margin-bottom: 1em;
+  }
+
+  .libraries {
+    a {
+      margin: 0 1em;
+    }
+  }
 }

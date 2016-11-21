@@ -12,7 +12,7 @@ export class PointCounter extends Text {
     }
 
     increasePoints() {
-        this.points += 100 * this.scale;
+        this.points += 100;
     }
 
     render() {

@@ -5,45 +5,63 @@ import { PointCounter } from "./model/point-counter";
 import { loop, input, pointCounterUpdates } from "./reactive/streams";
 import {notifyGameOver} from "./reactive/streams";
 import {GameOverText} from "./model/game-over-text";
+import {Observable} from "rxjs/bundles/Rx";
 
 require("../css/main.scss");
 
-const INIT_LEVEL = 1;
+const INIT_LEVEL = 2;
 const MAX_LEVEL = 5;
 const SPACE_KEY = 32;
 const ENTER_KEY = 13;
 
 let canvas = document.getElementById("game");
-let scale = calculateScale();
 let ctx = canvas.getContext("2d");
-let obstacle = new Obstacle(canvas, scale);
-let mainCharacter = new MainCharacter(canvas, scale);
-let ground = new Ground(canvas, scale);
-let pointCounter = new PointCounter(canvas, scale);
-let level = INIT_LEVEL;
-let isGameOver = false;
-let gameOverText = new GameOverText(canvas, scale);
-
-console.log(scale);
+let scale;
+let obstacle;
+let mainCharacter;
+let ground;
+let pointCounter;
+let level;
+let isGameOver;
+let gameOverText;
 
 const gameLoop = loop.filter(() => !isGameOver);
-const gameInput = gameLoop.withLatestFrom(input);
+const gameInput = Observable.zip(gameLoop, input);
 
 const mainCharacterJump = gameInput
-    .filter(([ticker, keyPressed]) => keyPressed === SPACE_KEY);
+    .filter(([ticker, event]) => {
+        return event.keyCode === SPACE_KEY || (event.target && event.target.id === 'game');
+    });
 
 const gameReset = input
-    .filter((keyPressed) => keyPressed === ENTER_KEY);
+    .filter((event) => isGameOver && (event.keyCode === ENTER_KEY || (event.target && event.target.id === 'game')));
+
+function preventSpacebarDefault() {
+    document.addEventListener('keydown', (e) =>{
+        if (e.keyCode == SPACE_KEY) {
+            e.preventDefault();
+        }
+    });
+}
+
+function initCanvas() {
+    canvas.height = canvas.width * 9/16;
+}
 
 function initGame() {
+    initCanvas();
+    scale = calculateScale();
+    obstacle = new Obstacle(canvas, scale);
+    ground = new Ground(canvas, scale);
+    pointCounter = new PointCounter(canvas, scale);
+    level = INIT_LEVEL;
+    isGameOver = false;
+    gameOverText = new GameOverText(canvas, scale);
     respawnObstacle(obstacle, canvas);
     mainCharacter = new MainCharacter(canvas, scale);
     mainCharacter.x = 20 * scale;
-    mainCharacter.y = canvas.height - mainCharacter.height - ground.height;
+    mainCharacter.y = canvas.height - mainCharacter.height - ground.height + ground.height/8;
     pointCounter.points = 0;
-    level = INIT_LEVEL;
-    isGameOver = false;
-    gameOverText.hide();
 }
 
 function calculateScale() {
@@ -54,13 +72,13 @@ function makeJumpMainCharacter() {
     mainCharacter.jump();
 }
 
-function moveMainCharacter([ticker]) {
+function moveMainCharacter(ticker) {
     mainCharacter.moveToNextPosition(ticker.deltaTime);
 }
 
 function respawnObstacle(obstacle, canvas) {
     obstacle.x = canvas.width;
-    obstacle.y = canvas.height - obstacle.height - ground.height;
+    obstacle.y = canvas.height - obstacle.height - ground.height + ground.height/8;
 }
 
 function moveObstacles(ticker) {
@@ -110,12 +128,13 @@ function clearCanvas() {
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 }
 
+preventSpacebarDefault();
 initGame();
 mainCharacterJump.subscribe(makeJumpMainCharacter);
-gameInput.subscribe(moveMainCharacter);
+pointCounterUpdates.subscribe(increasePointCounter);
+gameLoop.subscribe(moveMainCharacter);
 gameLoop.subscribe(moveObstacles);
 gameLoop.subscribe(checkGameOver);
-pointCounterUpdates.subscribe(increasePointCounter);
 gameLoop.subscribe(render);
 gameReset.subscribe(initGame);
 

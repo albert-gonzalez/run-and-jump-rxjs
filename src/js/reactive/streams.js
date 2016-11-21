@@ -17,14 +17,17 @@ const loop = Observable
 
 const input = Observable.merge(
     Observable.fromEvent(document, 'keydown',
-        event => event.keyCode
+        event => event
+    ),
+    Observable.fromEvent(document, 'click',
+        event => event
     ),
     Observable.fromEvent(document, 'keyup', event => false),
     Observable.create((subscriber) => {subscriber.next(false); subscriber.complete(); })
-);
+).distinctUntilChanged();
 
 const pointCounterUpdates = Observable.interval(1000).timeInterval();
 
-const notifyGameOver = Observable.range(0,1).delay(10);
+const notifyGameOver = Observable.range(0,1).delay(100);
 
 export { loop, input, pointCounterUpdates, notifyGameOver };

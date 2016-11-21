@@ -17,8 +17,6 @@ export class Ground extends Sprite {
         super(canvas, 24 * scale , 40 * scale, sourceConfig);
         this.x = 0;
         this.y = canvas.height - this.height;
-
-        console.log(this.y, this.height, canvas.height);
         this.translate = 0;
         this.scale = scale;
     }

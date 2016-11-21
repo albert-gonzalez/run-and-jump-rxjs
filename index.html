@@ -4,10 +4,43 @@
     <meta charset="UTF-8">
     <title>Run and Jump RxJS</title>
     <link href="https://fonts.googleapis.com/css?family=Press+Start+2P" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link rel="icon" type="image/png" href="favicon.ico">
 </head>
 <body>
-    <h1>Run and Jump RxJS</h1>
-    <canvas id="game" width="400" height="400"></canvas>
+    <div class="row game-container">
+        <div class="columns large-8 large-offset-2">
+            <canvas id="game"></canvas>
+        </div>
+    </div>
+    <div class="row">
+        <div class="columns text-center">
+            <h1>Run and Jump RxJS</h1>
+        </div>
+    </div>
+    <div class="row">
+        <div class="columns text-justify">
+            <p>Run and Jump game made with RxJS v5, ES6 and bundled with webpack. Press spacebar o tap on the screen to jump. The sprites are from Bonk's Revenge, a game released on Turbografx on 1991. Enjoy it!</p>
+        </div>
+    </div>
+    <div class="footer row">
+        <div class="columns text-center">
+            <div class="row">
+                <strong>Source</strong><br>
+                <a href="https://github.com/albert-gonzalez/run-and-jump-rxjs">Github</a>
+            </div>
+            <div class="libraries row">
+                <strong>Libraries</strong><br>
+                <a href="https://github.com/ReactiveX/rxjs">RxJS</a>
+                <a href="https://github.com/zurb/foundation-sites">Foundation Sites</a>
+                <a href="https://github.com/webpack/webpack">Webpack</a>
+                <a href="https://github.com/babel/babel">Babel</a>
+            </div>
+            <div class="row">
+                Created by <a href="https://github.com/albert-gonzalez">Albert González</a>
+            </div>
+        </div>
+    </div>
 </body>
 <script src="dist/game.bundle.js"></script>
 </html>

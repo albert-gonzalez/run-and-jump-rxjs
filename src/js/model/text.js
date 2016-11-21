@@ -6,6 +6,7 @@ export class Text {
     }
 
     render(text) {
+        this.context.save();
         this.context.beginPath();
         this.context.fillStyle = 'white';
         this.context.shadowOffsetX = 1;
@@ -14,5 +15,6 @@ export class Text {
         this.context.font = `${this.size}px "Press Start 2P"`;
         this.context.fillText(text, this.x, this.y);
         this.context.closePath();
+        this.context.restore();
     }
 }
