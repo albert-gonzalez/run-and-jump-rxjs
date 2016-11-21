@@ -3,7 +3,7 @@ import { Sprite } from "./sprite";
 const sourceConfig = {
     width: 24,
     height: 40,
-    image: '../../../assets/sprites/ground.png',
+    image: require('../../../assets/sprites/ground.png'),
     frameSpeed: 10,
     actions: {
         ground: { length: 1, y: 0, auto: false },

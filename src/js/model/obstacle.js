@@ -3,7 +3,7 @@ import { Sprite } from "./sprite";
 const sourceConfig = {
     width: 72,
     height: 47,
-    image: '../../../assets/sprites/dino.png',
+    image: require('../../../assets/sprites/dino.png'),
     frameSpeed: 10,
     actions: {
         run: {length: 3, y: 0, auto: true}

@@ -4,7 +4,7 @@ const maxJumpHeight = 85;
 const sourceConfig = {
     width: 74,
     height: 96,
-    image: '../../../assets/sprites/bonk.png',
+    image: require('../../../assets/sprites/bonk.png'),
     frameSpeed: 10,
     actions: {
         jump: { length: 3, y: 203, auto: false },
