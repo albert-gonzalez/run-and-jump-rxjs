@@ -2,7 +2,7 @@ import { Obstacle } from "./model/obstacle";
 import { MainCharacter } from "./model/main-character";
 import { Ground } from "./model/ground";
 import { PointCounter } from "./model/point-counter";
-import { loop, input, pointCounterUpdates, notifyGameOver } from "./reactive/streams";
+import { loop, input, pointCounterUpdates, notifyGameOver, obstacleRespawned } from "./reactive/streams";
 import { GameOverText } from "./model/game-over-text";
 import { Observable } from "rxjs/bundles/Rx";
 
@@ -10,6 +10,10 @@ require("../css/main.scss");
 
 const INIT_LEVEL = 2;
 const MAX_LEVEL = 5;
+const ORIGINAL_WIDTH = 400;
+const MAIN_CHARACTER_X_POSITION = 20;
+const CHANCE_OF_RESPAWN = 0.05;
+
 const SPACE_KEY = 32;
 const ENTER_KEY = 13;
 
@@ -28,12 +32,18 @@ const gameLoop = loop.filter(() => !isGameOver);
 const gameInput = Observable.zip(gameLoop, input);
 
 const mainCharacterJump = gameInput
-    .filter(([ticker, event]) => {
-        return event.keyCode === SPACE_KEY || (event.target && event.target.id === 'game');
-    });
+    .filter(isJumpPressed);
 
 const gameReset = input
-    .filter((event) => isGameOver && (event.keyCode === ENTER_KEY || (event.target && event.target.id === 'game')));
+    .filter(isResetPressed);
+
+function isJumpPressed([ticker, event]) {
+    return event.keyCode === SPACE_KEY || (event.target && event.target.id === 'game');
+}
+
+function isResetPressed(event) {
+    return isGameOver && (event.keyCode === ENTER_KEY || (event.target && event.target.id === 'game'))
+}
 
 function preventSpacebarDefault() {
     document.addEventListener('keydown', (e) =>{
@@ -50,21 +60,28 @@ function initCanvas() {
 function initGame() {
     initCanvas();
     scale = calculateScale();
-    obstacle = new Obstacle(canvas, scale);
-    ground = new Ground(canvas, scale);
-    pointCounter = new PointCounter(canvas, scale);
     level = INIT_LEVEL;
     isGameOver = false;
-    gameOverText = new GameOverText(canvas, scale);
-    respawnObstacle(obstacle, canvas);
-    mainCharacter = new MainCharacter(canvas, scale);
-    mainCharacter.x = 20 * scale;
-    mainCharacter.y = canvas.height - mainCharacter.height - ground.height + ground.height/8;
-    pointCounter.points = 0;
+    initRenderizableObjects();
 }
 
 function calculateScale() {
-    return canvas.width / 400;
+    return canvas.width / ORIGINAL_WIDTH;
+}
+
+function initRenderizableObjects() {
+    ground = new Ground(canvas, scale);
+    pointCounter = new PointCounter(canvas, scale);
+    pointCounter.points = 0;
+
+    gameOverText = new GameOverText(canvas, scale);
+    mainCharacter = new MainCharacter(canvas, scale);
+
+    mainCharacter.x = MAIN_CHARACTER_X_POSITION * scale;
+    mainCharacter.y = canvas.height - mainCharacter.height - ground.height + ground.height/8;
+
+    obstacle = new Obstacle(canvas, scale);
+    respawnObstacle(obstacle, canvas);
 }
 
 function makeJumpMainCharacter() {
@@ -80,17 +97,20 @@ function respawnObstacle(obstacle, canvas) {
     obstacle.y = canvas.height - obstacle.height - ground.height + ground.height/8;
 }
 
+function increaseLevel() {
+    if (level < MAX_LEVEL) {
+        level += 0.1;
+    }
+}
+
 function moveObstacles(ticker) {
     if (obstacle.isOutOfCanvas()) {
-        if (Math.random() > 0.98) {
-            if (level < MAX_LEVEL) {
-                level += 0.1;
-            }
-
+        if (Math.random() < CHANCE_OF_RESPAWN) {
             respawnObstacle(obstacle, canvas);
+            obstacleRespawned.next();
         }
     } else {
-        obstacle.move(-120 * level * ticker.deltaTime * scale, 0);
+        obstacle.moveToNextPosition(ticker.deltaTime, level);
     }
 }
 
@@ -101,15 +121,19 @@ function checkGameOver() {
         mainCharacter.y <= obstacle.y + obstacle.height/2;
 
     if (collision) {
-        mainCharacter.setAction('death');
-        gameOverText.show();
-
-        notifyGameOver.subscribe(() => isGameOver = true);
+        notifyGameOver.next();
     }
 }
 
 function increasePointCounter() {
     pointCounter.increasePoints();
+}
+
+function gameOver() {
+    isGameOver = true;
+    mainCharacter.setAction('death');
+    gameOverText.show();
+    render();
 }
 
 function render() {
@@ -129,12 +153,17 @@ function clearCanvas() {
 
 preventSpacebarDefault();
 initGame();
+
 mainCharacterJump.subscribe(makeJumpMainCharacter);
 pointCounterUpdates.subscribe(increasePointCounter);
+
 gameLoop.subscribe(moveMainCharacter);
 gameLoop.subscribe(moveObstacles);
 gameLoop.subscribe(checkGameOver);
 gameLoop.subscribe(render);
+
+obstacleRespawned.subscribe(increaseLevel);
+notifyGameOver.subscribe(gameOver);
 gameReset.subscribe(initGame);
 
 
