@@ -1,4 +1,5 @@
 import { Observable, Scheduler } from "rxjs/bundles/Rx";
+import {Subject} from "rxjs/Subject";
 
 const TICKER_INTERVAL = 17;
 
@@ -28,6 +29,8 @@ const input = Observable.merge(
 
 const pointCounterUpdates = Observable.interval(1000).timeInterval();
 
-const notifyGameOver = Observable.range(0,1).delay(100);
+const notifyGameOver = new Subject();
 
-export { loop, input, pointCounterUpdates, notifyGameOver };
+const obstacleRespawned = new Subject();
+
+export { loop, input, pointCounterUpdates, notifyGameOver, obstacleRespawned };

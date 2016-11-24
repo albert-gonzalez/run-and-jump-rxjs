@@ -11,6 +11,8 @@ const sourceConfig = {
     defaultAction: 'run'
 };
 
+const MOVEMENT_SPEED = 120;
+
 export class Obstacle extends Sprite {
     constructor(canvas, scale) {
         super(
@@ -25,5 +27,9 @@ export class Obstacle extends Sprite {
 
     isOutOfCanvas() {
         return this.x + this.width < 0 || this.x > this.canvas.width;
+    }
+
+    moveToNextPosition(deltaTime, level) {
+        this.move(-MOVEMENT_SPEED * level * deltaTime * this.scale, 0);
     }
 }
