@@ -1,7 +1,7 @@
 import { Observable, Scheduler } from "rxjs/bundles/Rx";
 import {Subject} from "rxjs/Subject";
 
-const TICKER_INTERVAL = 17;
+const TICKER_INTERVAL = 20;
 
 const loop = Observable
     .interval(TICKER_INTERVAL, Scheduler.requestAnimationFrame)
