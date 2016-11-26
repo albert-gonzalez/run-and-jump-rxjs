@@ -1,5 +1,5 @@
 import { Observable, Scheduler } from "rxjs/bundles/Rx";
-import {Subject} from "rxjs/Subject";
+import { Subject } from "rxjs/Subject";
 
 const TICKER_INTERVAL = 20;
 
