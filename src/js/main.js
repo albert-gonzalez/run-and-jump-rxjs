@@ -1,23 +1,23 @@
 import { pointCounterUpdates, notifyGameOver, obstacleRespawned } from "./reactive/observables";
-import { makeJumpMainCharacter } from "./reactive/observers";
-import { increasePointCounter } from "./reactive/observers";
-import { moveMainCharacter } from "./reactive/observers";
-import { moveObstacles } from "./reactive/observers";
-import { checkGameOver } from "./reactive/observers";
-import { increaseLevel } from "./reactive/observers";
-import { gameOver } from "./reactive/observers";
-import { initGame } from "./reactive/observers";
-import { gameReset } from "./reactive/observers";
-import { mainCharacterJump } from "./reactive/observers";
-import { gameLoop } from "./reactive/observers";
-import { render } from "./reactive/observers";
-import { SPACE_KEY } from "./reactive/observers";
+import { makeJumpMainCharacter } from "./reactive/engine";
+import { increasePointCounter } from "./reactive/engine";
+import { moveMainCharacter } from "./reactive/engine";
+import { moveObstacles } from "./reactive/engine";
+import { checkGameOver } from "./reactive/engine";
+import { increaseLevel } from "./reactive/engine";
+import { gameOver } from "./reactive/engine";
+import { initGame } from "./reactive/engine";
+import { gameReset } from "./reactive/engine";
+import { mainCharacterJump } from "./reactive/engine";
+import { gameLoop } from "./reactive/engine";
+import { render } from "./reactive/engine";
+import { SPACE_KEY } from "./reactive/engine";
 
 require("../css/main.scss");
 
 function preventSpacebarDefault() {
     document.addEventListener('keydown', (e) =>{
-        if (e.keyCode == SPACE_KEY) {
+        if (e.code == SPACE_KEY || e.key == SPACE_KEY) {
             e.preventDefault();
         }
     });

@@ -12,11 +12,11 @@ const ORIGINAL_WIDTH = 400;
 const MAIN_CHARACTER_X_POSITION = 20;
 const CHANCE_OF_RESPAWN = 0.05;
 
-const SPACE_KEY = 32;
-const ENTER_KEY = 13;
+const SPACE_KEY = 'Space';
+const ENTER_KEY = 'Enter';
 
-let canvas = document.getElementById("game");
-let ctx = canvas.getContext("2d");
+let canvas;
+let ctx;
 let scale;
 let obstacle;
 let mainCharacter;
@@ -36,15 +36,17 @@ const gameReset = input
     .filter(isResetPressed);
 
 function isJumpPressed([ticker, event]) {
-    return event.keyCode === SPACE_KEY || (event.target && event.target.id === 'game');
+    return event.code === SPACE_KEY || event.key === ' ' || (event.target && event.target.id === 'game');
 }
 
 function isResetPressed(event) {
-    return isGameOver && (event.keyCode === ENTER_KEY || (event.target && event.target.id === 'game'))
+    return isGameOver && (event.code === ENTER_KEY || event.key === ENTER_KEY || (event.target && event.target.id === 'game'))
 }
 
 function initCanvas() {
+    canvas = document.getElementById("game");
     canvas.height = canvas.width * 9/16;
+    ctx = canvas.getContext("2d");
 }
 
 function initGame() {
@@ -153,6 +155,7 @@ export {
     initGame,
 
     gameLoop,
+    gameInput,
     mainCharacterJump,
     gameReset,
 
