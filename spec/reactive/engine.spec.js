@@ -1,7 +1,7 @@
 import { gameLoop, initGame, gameOver, gameReset, gameInput, mainCharacterJump } from "../../src/js/reactive/engine";
 
 
-describe('observers', () => {
+describe('engine observables', () => {
     let canvas;
     const LOOP_TICKS = 20;
 

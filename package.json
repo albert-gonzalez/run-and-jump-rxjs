@@ -8,7 +8,8 @@
   "scripts": {
     "webpack": "./node_modules/.bin/webpack --optimize-minimize",
     "webpack-server": "./node_modules/.bin/webpack-dev-server",
-    "start": "npm run webpack-server --progress"
+    "start": "npm run webpack-server --progress",
+    "test": "karma start --single-run"
   },
   "dependencies": {
     "rxjs": "^5.0.0-rc.2"
@@ -25,6 +26,7 @@
     "karma": "^1.3.0",
     "karma-chrome-launcher": "^2.0.0",
     "karma-jasmine": "^1.0.2",
+    "karma-mocha-reporter": "^2.2.1",
     "karma-webpack": "^1.8.0",
     "node-sass": "^3.13.0",
     "sass-loader": "^4.0.2",
