@@ -20,10 +20,11 @@ const input = Observable.merge(
     Observable.fromEvent(document, 'keydown',
         event => event
     ),
-    Observable.fromEvent(document, 'click',
+    Observable.fromEvent(document, 'mousedown',
         event => event
     ),
-    Observable.fromEvent(document, 'keyup', event => false)
+    Observable.fromEvent(document, 'keyup', event => false),
+    Observable.fromEvent(document, 'mouseup', event => false),
 ).distinctUntilChanged();
 
 const pointCounterUpdates = Observable.interval(1000).timeInterval();

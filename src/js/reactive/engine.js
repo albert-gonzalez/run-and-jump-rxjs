@@ -27,7 +27,7 @@ let isGameOver;
 let gameOverText;
 
 const gameLoop = loop.filter(() => !isGameOver);
-const gameInput = Observable.zip(gameLoop, input);
+const gameInput = Observable.combineLatest(gameLoop, input);
 
 const mainCharacterJump = gameInput
     .filter(isJumpPressed);
