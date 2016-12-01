@@ -57,7 +57,7 @@ describe('engine observables', () => {
             keyDownEvent = new KeyboardEvent('keydown', {key: anotherChar});
             document.dispatchEvent(keyDownEvent);
 
-            expect(pressedKey).toBe(char);
+            expect(pressedKey).toBe(anotherChar);
             document.dispatchEvent(keyUpEvent);
 
 
@@ -91,14 +91,14 @@ describe('engine observables', () => {
                 counter++;
             });
 
-            let clickEvent = new MouseEvent('click', {
+            let clickEvent = new MouseEvent('mousedown', {
                 bubbles: true,
             });
             canvas.dispatchEvent(clickEvent);
 
             gameOver();
 
-            clickEvent = new MouseEvent('click', {
+            clickEvent = new MouseEvent('mousedown', {
                 bubbles: true,
             });
             canvas.dispatchEvent(clickEvent);
@@ -118,7 +118,6 @@ describe('engine observables', () => {
             let keyUpEvent = new KeyboardEvent('keyup');
 
             document.dispatchEvent(keyDownEvent);
-            document.dispatchEvent(keyUpEvent);
 
             expect(counter).toBe(0);
 
@@ -133,7 +132,7 @@ describe('engine observables', () => {
                 counter++;
             });
 
-            let clickEvent = new MouseEvent('click', {
+            let clickEvent = new MouseEvent('mousedown', {
                 bubbles: true,
             });
             canvas.dispatchEvent(clickEvent);
