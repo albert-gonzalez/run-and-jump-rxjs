@@ -18,10 +18,8 @@ const loop = Observable
 const input = Observable.merge(
     Observable.fromEvent(document, 'keydown', returnEvent),
     Observable.fromEvent(document, 'mousedown', returnEvent),
-    Observable.fromEvent(document, 'touchstart', returnEvent),
     Observable.fromEvent(document, 'keyup', event => false),
     Observable.fromEvent(document, 'mouseup', event => false),
-    Observable.fromEvent(document, 'touchend', event => false),
 )
     .startWith(false)
     .distinctUntilChanged();

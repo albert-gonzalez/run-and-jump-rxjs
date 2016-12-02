@@ -13,7 +13,9 @@ const MAIN_CHARACTER_X_POSITION = 20;
 const CHANCE_OF_RESPAWN = 0.05;
 
 const SPACE_KEY = 'Space';
+const SPACE_KEY_CODE = 32;
 const ENTER_KEY = 'Enter';
+const ENTER_KEY_CODE = 13;
 
 function createGameLoop() {
     return loop
@@ -23,11 +25,11 @@ function createGameLoop() {
 }
 
 function isJumpPressed(event) {
-    return event.code === SPACE_KEY || event.key === ' ' || (event.target && event.target.id === 'game');
+    return event.code === SPACE_KEY || event.key === ' ' || event.keyCode === SPACE_KEY_CODE || (event.target && event.target.id === 'game');
 }
 
 function isResetPressedWhenIsGameOver(event, isGameOver) {
-    return isGameOver && (event.code === ENTER_KEY || event.key === ENTER_KEY || (event.target && event.target.id === 'game'))
+    return isGameOver && (event.code === ENTER_KEY || event.key === ENTER_KEY || event.keyCode === ENTER_KEY_CODE ||  (event.target && event.target.id === 'game'))
 }
 
 function initCanvas() {
@@ -186,5 +188,6 @@ export {
     gameOver,
     createGameLoop,
 
-    SPACE_KEY
+    SPACE_KEY,
+    SPACE_KEY_CODE
 };
