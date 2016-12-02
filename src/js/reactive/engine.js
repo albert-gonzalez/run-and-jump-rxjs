@@ -2,7 +2,7 @@ import { Obstacle } from "../model/obstacle";
 import { MainCharacter } from "../model/main-character";
 import { Ground } from "../model/ground";
 import { PointCounter } from "../model/point-counter";
-import { loop, input, notifyGameOver, obstacleRespawned } from "../reactive/observables";
+import { loop, input } from "../reactive/observables";
 import { GameOverText } from "../model/game-over-text";
 import { Observable } from "rxjs/bundles/Rx";
 
@@ -15,149 +15,176 @@ const CHANCE_OF_RESPAWN = 0.05;
 const SPACE_KEY = 'Space';
 const ENTER_KEY = 'Enter';
 
-let canvas;
-let ctx;
-let scale;
-let obstacle;
-let mainCharacter;
-let ground;
-let pointCounter;
-let level;
-let isGameOver;
-let gameOverText;
+function createGameLoop() {
+    return loop
+        .withLatestFrom(input)
+        .scan(calculateNextState, initGame())
+        .filter(isGameRunning);
+}
 
-const gameLoop = loop.filter(() => !isGameOver);
-const gameInput = Observable.combineLatest(gameLoop, input);
-
-const mainCharacterJump = gameInput
-    .filter(isJumpPressed);
-
-const gameReset = input
-    .filter(isResetPressed);
-
-function isJumpPressed([ticker, event]) {
+function isJumpPressed(event) {
     return event.code === SPACE_KEY || event.key === ' ' || (event.target && event.target.id === 'game');
 }
 
-function isResetPressed(event) {
+function isResetPressedWhenIsGameOver(event, isGameOver) {
     return isGameOver && (event.code === ENTER_KEY || event.key === ENTER_KEY || (event.target && event.target.id === 'game'))
 }
 
 function initCanvas() {
-    canvas = document.getElementById("game");
+    let canvas = document.getElementById("game");
     canvas.height = canvas.width * 9/16;
-    ctx = canvas.getContext("2d");
+    let ctx = canvas.getContext("2d");
+
+    return [canvas, ctx];
 }
 
 function initGame() {
-    initCanvas();
-    scale = calculateScale();
-    level = INIT_LEVEL;
-    isGameOver = false;
-    initPrintableObjects();
+    let [canvas, context] = initCanvas();
+    let scale = calculateScale(canvas);
+    let objects = initPrintableObjects(canvas, scale);
+
+    return Object.assign({}, {
+        canvas: canvas,
+        context: context,
+        scale: scale,
+        level: INIT_LEVEL,
+        isGameOver: false,
+        isGameRunning, true
+    }, objects);
 }
 
-function calculateScale() {
+function calculateScale(canvas) {
     return canvas.width / ORIGINAL_WIDTH;
 }
 
-function initPrintableObjects() {
-    ground = new Ground(canvas, scale);
-    pointCounter = new PointCounter(canvas, scale);
-    pointCounter.points = 0;
-
-    gameOverText = new GameOverText(canvas, scale);
-    mainCharacter = new MainCharacter(canvas, scale);
+function initPrintableObjects(canvas, scale) {
+    let ground = new Ground(canvas, scale);
+    let mainCharacter = new MainCharacter(canvas, scale);
 
     mainCharacter.x = MAIN_CHARACTER_X_POSITION * scale;
     mainCharacter.y = canvas.height - mainCharacter.height - ground.height + ground.height/8;
 
-    obstacle = new Obstacle(canvas, scale);
-    respawnObstacle(obstacle, canvas);
+    let obstacle = new Obstacle(canvas, scale);
+    respawnObstacle(obstacle, canvas, ground);
+
+    return {
+        ground: ground,
+        pointCounter: new PointCounter(canvas, scale),
+        mainCharacter: mainCharacter,
+        obstacle: obstacle,
+        gameOverText: new GameOverText(canvas, scale)
+    }
 }
 
-function makeJumpMainCharacter() {
+function calculateNextState(state, [ticker, event]) {
+    if (isJumpPressed(event)) {
+        makeJumpMainCharacter(state.mainCharacter);
+    }
+
+    if (isResetPressedWhenIsGameOver(event, state.isGameOver)) {
+        return initGame();
+    }
+
+    if (!state.isGameOver) {
+        moveMainCharacter(state.mainCharacter, ticker);
+        moveObstacles(state, ticker);
+        calculateNextObjectsFrames(state);
+
+        if (checkGameOver(state.mainCharacter, state.obstacle)) {
+            gameOver(state);
+        }
+    } else {
+        state.isGameRunning = false;
+    }
+
+    return state;
+}
+
+function makeJumpMainCharacter(mainCharacter) {
     mainCharacter.jump();
 }
 
-function moveMainCharacter(ticker) {
+function moveMainCharacter(mainCharacter, ticker) {
     mainCharacter.moveToNextPosition(ticker.deltaTime);
 }
 
-function respawnObstacle(obstacle, canvas) {
+function respawnObstacle(obstacle, canvas, ground) {
     obstacle.x = canvas.width;
     obstacle.y = canvas.height - obstacle.height - ground.height + ground.height/8;
 }
 
-function increaseLevel() {
+function increaseLevel(level) {
     if (level < MAX_LEVEL) {
         level += 0.1;
     }
+
+    return level;
 }
 
-function moveObstacles(ticker) {
+function moveObstacles(state, ticker) {
+    let obstacle = state.obstacle,
+        canvas = state.canvas,
+        level = state.level,
+        ground = state.ground;
+
     if (obstacle.isOutOfCanvas()) {
         if (Math.random() < CHANCE_OF_RESPAWN) {
-            respawnObstacle(obstacle, canvas);
-            obstacleRespawned.next();
+            respawnObstacle(obstacle, canvas, ground);
+            // obstacleRespawned.next();
+            state.level = increaseLevel(state.level);
+            increasePointCounter(state.pointCounter);
         }
     } else {
         obstacle.moveToNextPosition(ticker.deltaTime, level);
     }
 }
 
-function checkGameOver() {
-    let collision = mainCharacter.x + mainCharacter.width/2 >= obstacle.x &&
-        mainCharacter.x <= obstacle.x + obstacle.width/2 &&
-        mainCharacter.y + mainCharacter.height/2 >= obstacle.y &&
-        mainCharacter.y <= obstacle.y + obstacle.height/2;
-
-    if (collision) {
-        notifyGameOver.next();
-    }
+function checkGameOver(mainCharacter, obstacle) {
+    return mainCharacter.x + mainCharacter.width / 2 >= obstacle.x &&
+        mainCharacter.x <= obstacle.x + obstacle.width / 2 &&
+        mainCharacter.y + mainCharacter.height / 2 >= obstacle.y &&
+        mainCharacter.y <= obstacle.y + obstacle.height / 2;
 }
 
-function increasePointCounter() {
+function increasePointCounter(pointCounter) {
     pointCounter.increasePoints();
 }
 
-function gameOver() {
-    isGameOver = true;
-    mainCharacter.setAction('death');
-    gameOverText.show();
-    render();
+function gameOver(state) {
+    state.isGameOver = true;
+    state.mainCharacter.setAction('death');
+    state.gameOverText.show();
 }
 
-function render() {
-    clearCanvas();
-
-    ground.render();
-    obstacle.render();
-    mainCharacter.render();
-    pointCounter.render();
-    gameOverText.render();
+function isGameRunning(state) {
+    return state.isGameRunning;
 }
 
-function clearCanvas() {
-    ctx.fillStyle = 'rgb(0, 117, 255)';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+function calculateNextObjectsFrames(state) {
+    state.mainCharacter.calculateNextFrame();
+    state.obstacle.calculateNextFrame();
+    state.ground.calculateNextFrame();
+}
+
+function render(state) {
+    clearCanvas(state);
+
+    state.ground.render();
+    state.obstacle.render();
+    state.mainCharacter.render();
+    state.pointCounter.render();
+    state.gameOverText.render();
+}
+
+function clearCanvas(state) {
+    state.context.fillStyle = 'rgb(0, 117, 255)';
+    state.context.fillRect(0, 0, state.canvas.width, state.canvas.height);
 }
 
 export {
-    makeJumpMainCharacter,
-    increasePointCounter,
-    moveMainCharacter,
-    moveObstacles,
-    checkGameOver,
     render,
-    increaseLevel,
     gameOver,
-    initGame,
-
-    gameLoop,
-    gameInput,
-    mainCharacterJump,
-    gameReset,
+    createGameLoop,
 
     SPACE_KEY
 };

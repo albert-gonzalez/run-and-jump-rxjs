@@ -1,5 +1,4 @@
 import { Observable, Scheduler } from "rxjs/bundles/Rx";
-import { Subject } from "rxjs/Subject";
 
 const TICKER_INTERVAL = 20;
 
@@ -17,22 +16,18 @@ const loop = Observable
     );
 
 const input = Observable.merge(
-    Observable.fromEvent(document, 'keydown',
-        event => event
-    ),
-    Observable.fromEvent(document, 'mousedown',
-        event => event
-    ),
+    Observable.fromEvent(document, 'keydown', returnEvent),
+    Observable.fromEvent(document, 'mousedown', returnEvent),
+    Observable.fromEvent(document, 'touchstart', returnEvent),
     Observable.fromEvent(document, 'keyup', event => false),
     Observable.fromEvent(document, 'mouseup', event => false),
+    Observable.fromEvent(document, 'touchend', event => false),
 )
     .startWith(false)
     .distinctUntilChanged();
 
-const pointCounterUpdates = Observable.interval(1000).timeInterval();
+function returnEvent(event) {
+    return event;
+}
 
-const notifyGameOver = new Subject();
-
-const obstacleRespawned = new Subject();
-
-export { loop, input, pointCounterUpdates, notifyGameOver, obstacleRespawned };
+export { loop, input};

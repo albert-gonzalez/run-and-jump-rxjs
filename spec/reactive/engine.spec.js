@@ -1,15 +1,14 @@
-import { gameLoop, initGame, gameOver, gameReset, gameInput, mainCharacterJump } from "../../src/js/reactive/engine";
-
+import { createGameLoop } from "../../src/js/reactive/engine";
 
 describe('engine observables', () => {
     let canvas;
     const LOOP_TICKS = 20;
+    const ENOUGH_TICKS_TO_KILL_THE_MAIN_CHARACTER = 5000;
 
     beforeEach(() => {
         canvas = document.createElement('canvas');
         canvas.setAttribute('id', 'game');
         document.body.appendChild(canvas);
-        initGame();
         jasmine.clock().install();
     });
 
@@ -21,127 +20,17 @@ describe('engine observables', () => {
     describe('gameLoop', () => {
         it('should only send notifications when is not game over', () => {
             let counter = 0;
-            gameLoop.subscribe(() => {
+            let countUntilTheMainCharacterWasAlive;
+            createGameLoop().subscribe(() => {
                 counter++;
             });
-
-            jasmine.clock().tick(LOOP_TICKS);
-            gameOver();
-            jasmine.clock().tick(LOOP_TICKS);
-
-            expect(counter).toBe(1);
-        });
-    });
-
-    describe('gameInput', () => {
-        it('should send input and ticker notifications at the same time', () => {
-            let pressedKey = false;
-            let char = 'a';
-            let anotherChar = 'b';
-
-            gameInput.subscribe(([ticker, event]) => {
-                pressedKey = event.key;
-            });
-
-            let keyDownEvent = new KeyboardEvent('keydown', {key: char});
-            let keyUpEvent = new KeyboardEvent('keyup');
-            document.dispatchEvent(keyDownEvent);
-
-            expect(pressedKey).toBeFalsy();
+            jasmine.clock().mockDate(new Date());
+            jasmine.clock().tick(ENOUGH_TICKS_TO_KILL_THE_MAIN_CHARACTER);
+            countUntilTheMainCharacterWasAlive = counter;
 
             jasmine.clock().tick(LOOP_TICKS);
 
-            expect(pressedKey).toBe(char);
-            document.dispatchEvent(keyUpEvent);
-
-            keyDownEvent = new KeyboardEvent('keydown', {key: anotherChar});
-            document.dispatchEvent(keyDownEvent);
-
-            expect(pressedKey).toBe(anotherChar);
-            document.dispatchEvent(keyUpEvent);
-
-
-        });
-    });
-
-    describe('gameReset', () => {
-        it('should only send notifications when is game over and user press enter', () => {
-            let counter = 0;
-            gameReset.subscribe(() => {
-                counter++;
-            });
-
-            let keyDownEvent = new KeyboardEvent('keydown', {code: 'Enter'});
-            let keyUpEvent = new KeyboardEvent('keyup');
-
-            document.dispatchEvent(keyDownEvent);
-            document.dispatchEvent(keyUpEvent);
-
-            gameOver();
-
-            document.dispatchEvent(keyDownEvent);
-            document.dispatchEvent(keyUpEvent);
-
-            expect(counter).toBe(1);
-        });
-
-        it('should only send notifications when is game over and user click on canvas', () => {
-            let counter = 0;
-            gameReset.subscribe(() => {
-                counter++;
-            });
-
-            let clickEvent = new MouseEvent('mousedown', {
-                bubbles: true,
-            });
-            canvas.dispatchEvent(clickEvent);
-
-            gameOver();
-
-            clickEvent = new MouseEvent('mousedown', {
-                bubbles: true,
-            });
-            canvas.dispatchEvent(clickEvent);
-
-            expect(counter).toBe(1);
-        });
-    });
-
-    describe('mainCharacterJump', () => {
-        it('should only send notifications when user press space bar and gameLoop sends a notification', () => {
-            let counter = 0;
-            mainCharacterJump.subscribe(() => {
-                counter++;
-            });
-
-            let keyDownEvent = new KeyboardEvent('keydown', {code: 'Space'});
-            let keyUpEvent = new KeyboardEvent('keyup');
-
-            document.dispatchEvent(keyDownEvent);
-
-            expect(counter).toBe(0);
-
-            jasmine.clock().tick(LOOP_TICKS);
-
-            expect(counter).toBe(1);
-        });
-
-        it('should only send notifications when user click on canvas and gameLoop sends a notification', () => {
-            let counter = 0;
-            mainCharacterJump.subscribe(() => {
-                counter++;
-            });
-
-            let clickEvent = new MouseEvent('mousedown', {
-                bubbles: true,
-            });
-            canvas.dispatchEvent(clickEvent);
-
-            expect(counter).toBe(0);
-
-            jasmine.clock().tick(LOOP_TICKS);
-
-            expect(counter).toBe(1);
+            expect(counter).toBe(countUntilTheMainCharacterWasAlive);
         });
     });
 });

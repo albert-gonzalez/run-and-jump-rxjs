@@ -27,7 +27,9 @@ export class Sprite {
             this.width,
             this.height
         );
+    }
 
+    calculateNextFrame() {
         if (this.action.auto) {
             this.currentCycle++;
 

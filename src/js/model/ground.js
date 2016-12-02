@@ -23,12 +23,15 @@ export class Ground extends Sprite {
     render(x, y) {
         this.context.save();
         this.context.translate(this.translate, 0);
-        this.translate = (this.translate - (2 * this.scale)) % (48 * this.scale);
 
         for(let i = 0; i < 20; i++) {
             super.render(1 + this.width * i, this.y);
         }
 
         this.context.restore();
+    }
+
+    calculateNextFrame() {
+        this.translate = (this.translate - (2 * this.scale)) % (48 * this.scale);
     }
 }

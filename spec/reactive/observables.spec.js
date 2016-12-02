@@ -1,5 +1,4 @@
-import { loop, input, pointCounterUpdates, notifyGameOver, obstacleRespawned } from "../../src/js/reactive/observables";
-import {Subject} from "rxjs/Subject";
+import { loop, input } from "../../src/js/reactive/observables";
 
 describe('observable', () => {
     describe('loop', () => {
@@ -56,40 +55,6 @@ describe('observable', () => {
             document.dispatchEvent(keyEvent);
 
             expect(keyPressed).toBeFalsy();
-        });
-    });
-
-    describe('pointCounterUpdates', () => {
-        beforeEach(() => {
-            jasmine.clock().install();
-        });
-
-        afterEach(() => {
-            jasmine.clock().uninstall();
-        });
-
-        it('should tick every 1000 ms', () => {
-            let counter = 0;
-
-            pointCounterUpdates.subscribe(() => {
-                counter++;
-            });
-
-            jasmine.clock().tick(2000);
-
-            expect(counter).toBe(2);
-        });
-    });
-
-    describe('notifyGameOver', () => {
-        it('should be a Subjet', () => {
-            expect(notifyGameOver instanceof Subject).toBeTruthy();
-        });
-    });
-
-    describe('obstacleRespawned', () => {
-        it('should be a Subjet', () => {
-            expect(obstacleRespawned instanceof Subject).toBeTruthy();
         });
     });
 });
