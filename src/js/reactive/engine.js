@@ -18,8 +18,7 @@ const ENTER_KEY = 'Enter';
 const ENTER_KEY_CODE = 13;
 
 function createGameLoop() {
-    return loop
-        .withLatestFrom(input)
+    return Observable.combineLatest(loop, input)
         .scan(calculateNextState, initGame())
         .filter(isGameRunning);
 }
