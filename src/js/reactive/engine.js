@@ -4,7 +4,6 @@ import { Ground } from "../model/ground";
 import { PointCounter } from "../model/point-counter";
 import { loop, input } from "../reactive/observables";
 import { GameOverText } from "../model/game-over-text";
-import { Observable } from "rxjs/bundles/Rx";
 
 const INIT_LEVEL = 2;
 const MAX_LEVEL = 5;
@@ -17,9 +16,9 @@ const SPACE_KEY_CODE = 32;
 const ENTER_KEY = 'Enter';
 const ENTER_KEY_CODE = 13;
 
-function createGameLoop() {
-    return Observable.combineLatest(loop, input)
-        .scan(calculateNextState, initGame())
+function createGameLoop(defaultValues = {}) {
+    return loop.withLatestFrom(input)
+        .scan(calculateNextState, initGame(defaultValues))
         .filter(isGameRunning);
 }
 
@@ -39,7 +38,7 @@ function initCanvas() {
     return [canvas, ctx];
 }
 
-function initGame() {
+function initGame(defaultValues = {}) {
     let [canvas, context] = initCanvas();
     let scale = calculateScale(canvas);
     let objects = initPrintableObjects(canvas, scale);
@@ -51,7 +50,7 @@ function initGame() {
         level: INIT_LEVEL,
         isGameOver: false,
         isGameRunning, true
-    }, objects);
+    }, objects, defaultValues);
 }
 
 function calculateScale(canvas) {

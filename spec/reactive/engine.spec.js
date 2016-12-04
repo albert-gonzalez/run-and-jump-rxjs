@@ -20,17 +20,13 @@ describe('engine observables', () => {
     describe('gameLoop', () => {
         it('should only send notifications when is not game over', () => {
             let counter = 0;
-            let countUntilTheMainCharacterWasAlive;
-            createGameLoop().subscribe(() => {
+            createGameLoop({isGameRunning: false}).subscribe(() => {
                 counter++;
             });
-            jasmine.clock().mockDate(new Date());
-            jasmine.clock().tick(ENOUGH_TICKS_TO_KILL_THE_MAIN_CHARACTER);
-            countUntilTheMainCharacterWasAlive = counter;
 
             jasmine.clock().tick(LOOP_TICKS);
 
-            expect(counter).toBe(countUntilTheMainCharacterWasAlive);
+            expect(counter).toBe(0);
         });
     });
 });

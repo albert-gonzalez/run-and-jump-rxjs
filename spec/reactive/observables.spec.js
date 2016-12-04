@@ -22,7 +22,7 @@ describe('observable', () => {
             expect(counter).toBe(2);
         });
 
-        it('should return currentTime and deltaTime', () => {
+        it('should return deltaTime', () => {
             let ticker =
                 loop.subscribe((t) => {
                     ticker = t;
@@ -30,7 +30,6 @@ describe('observable', () => {
 
             jasmine.clock().tick(20);
 
-            expect(ticker.time).toBeDefined();
             expect(ticker.deltaTime).toBeDefined();
         });
     });
