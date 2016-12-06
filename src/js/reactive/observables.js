@@ -1,4 +1,4 @@
-import { Observable, Scheduler } from "rxjs";
+import { Observable } from "rxjs";
 
 const TICKER_INTERVAL = 20;
 

@@ -22,22 +22,6 @@ function createGameLoop(defaultValues = {}) {
         .filter(isGameRunning);
 }
 
-function isJumpPressed(event) {
-    return event.code === SPACE_KEY || event.key === ' ' || event.keyCode === SPACE_KEY_CODE || (event.target && event.target.id === 'game');
-}
-
-function isResetPressedWhenIsGameOver(event, isGameOver) {
-    return isGameOver && (event.code === ENTER_KEY || event.key === ENTER_KEY || event.keyCode === ENTER_KEY_CODE ||  (event.target && event.target.id === 'game'))
-}
-
-function initCanvas() {
-    let canvas = document.getElementById("game");
-    canvas.height = canvas.width * 9/16;
-    let ctx = canvas.getContext("2d");
-
-    return [canvas, ctx];
-}
-
 function initGame(defaultValues = {}) {
     let [canvas, context] = initCanvas();
     let scale = calculateScale(canvas);
@@ -51,6 +35,14 @@ function initGame(defaultValues = {}) {
         isGameOver: false,
         isGameRunning, true
     }, objects, defaultValues);
+}
+
+function initCanvas() {
+    let canvas = document.getElementById("game");
+    canvas.height = canvas.width * 9/16;
+    let ctx = canvas.getContext("2d");
+
+    return [canvas, ctx];
 }
 
 function calculateScale(canvas) {
@@ -100,6 +92,14 @@ function calculateNextState(state, [ticker, event]) {
     return state;
 }
 
+function isJumpPressed(event) {
+    return event.code === SPACE_KEY || event.key === ' ' || event.keyCode === SPACE_KEY_CODE || (event.target && event.target.id === 'game');
+}
+
+function isResetPressedWhenIsGameOver(event, isGameOver) {
+    return isGameOver && (event.code === ENTER_KEY || event.key === ENTER_KEY || event.keyCode === ENTER_KEY_CODE ||  (event.target && event.target.id === 'game'))
+}
+
 function makeJumpMainCharacter(mainCharacter) {
     mainCharacter.jump();
 }
@@ -113,12 +113,10 @@ function respawnObstacle(obstacle, canvas, ground) {
     obstacle.y = canvas.height - obstacle.height - ground.height + ground.height/8;
 }
 
-function increaseLevel(level) {
-    if (level < MAX_LEVEL) {
-        level += 0.1;
+function increaseLevel(state) {
+    if (state.level < MAX_LEVEL) {
+        state.level += 0.1;
     }
-
-    return level;
 }
 
 function moveObstacles(state, ticker) {
@@ -130,8 +128,7 @@ function moveObstacles(state, ticker) {
     if (obstacle.isOutOfCanvas()) {
         if (Math.random() < CHANCE_OF_RESPAWN) {
             respawnObstacle(obstacle, canvas, ground);
-            // obstacleRespawned.next();
-            state.level = increaseLevel(state.level);
+            increaseLevel(state);
             increasePointCounter(state.pointCounter);
         }
     } else {
