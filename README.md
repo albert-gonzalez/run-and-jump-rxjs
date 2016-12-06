@@ -8,6 +8,6 @@ https://albert-gonzalez.github.io/run-and-jump-rxjs/
 
 If you want to run the game in your computer, follow these steps:
 * clone this repo
-* ```npm install``` (or ```yarn install)```
+* ```npm install``` (or ```yarn install```)
 * ```npm start```
 * open http://localhost:8080/ in your browser
