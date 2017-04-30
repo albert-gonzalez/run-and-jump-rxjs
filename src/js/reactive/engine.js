@@ -33,7 +33,7 @@ function initGame(defaultValues = {}) {
         scale: scale,
         level: INIT_LEVEL,
         isGameOver: false,
-        isGameRunning, true
+        isGameRunning: true
     }, objects, defaultValues);
 }
 
@@ -69,27 +69,29 @@ function initPrintableObjects(canvas, scale) {
 }
 
 function calculateNextState(state, [ticker, event]) {
+    let newState = Object.assign({}, state);
+
     if (isJumpPressed(event)) {
         makeJumpMainCharacter(state.mainCharacter);
     }
 
-    if (isResetPressedWhenIsGameOver(event, state.isGameOver)) {
+    if (isResetPressedWhenIsGameOver(event, newState.isGameOver)) {
         return initGame();
     }
 
-    if (!state.isGameOver) {
-        moveMainCharacter(state.mainCharacter, ticker);
-        moveObstacles(state, ticker);
-        calculateNextObjectsFrames(state);
+    if (!newState.isGameOver) {
+        moveMainCharacter(newState.mainCharacter, ticker);
+        moveObstacles(newState, ticker);
+        calculateNextObjectsFrames(newState);
 
-        if (checkGameOver(state.mainCharacter, state.obstacle)) {
-            gameOver(state);
+        if (checkGameOver(newState.mainCharacter, newState.obstacle)) {
+            gameOver(newState);
         }
     } else {
-        state.isGameRunning = false;
+        newState.isGameRunning = false;
     }
 
-    return state;
+    return newState;
 }
 
 function isJumpPressed(event) {
