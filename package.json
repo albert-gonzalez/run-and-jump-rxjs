@@ -7,8 +7,7 @@
   "license": "MIT",
   "scripts": {
     "webpack": "./node_modules/.bin/webpack --mode=production",
-    "webpack-server": "./node_modules/.bin/webpack-dev-server",
-    "start": "npm run webpack-server --progress",
+    "start": "webpack-dev-server --progress --host 0.0.0.0",
     "test": "karma start --single-run"
   },
   "dependencies": {
