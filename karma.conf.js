@@ -2,7 +2,7 @@
 // Generated on Sat Nov 26 2016 18:23:22 GMT+0100 (CET)
 
 var webpackConfig = require('./webpack.config.js');
-webpackConfig.entry = {};
+delete webpackConfig.entry;
 
 module.exports = function(config) {
   config.set({

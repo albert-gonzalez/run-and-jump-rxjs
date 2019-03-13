@@ -1,24 +1,26 @@
-import { Observable } from "rxjs";
+import { startWith, distinctUntilChanged, timeInterval, map } from "rxjs/operators";
+import { fromEvent, interval, merge } from "rxjs";
 
 const TICKER_INTERVAL = 20;
 
-const loop = Observable
-    .interval(TICKER_INTERVAL)
-    .timeInterval()
-    .map((timeInterval) => ({
+const loop = interval(TICKER_INTERVAL).pipe(
+    timeInterval(),
+    map((timeInterval) => ({
         deltaTime: timeInterval.interval / 1000
-    }));
+    }))
+);
 
-const input = Observable.merge(
-    Observable.fromEvent(document, 'keydown', returnEvent),
-    Observable.fromEvent(document, 'mousedown', returnEvent),
-    Observable.fromEvent(document, 'touchstart', returnEvent),
-    Observable.fromEvent(document, 'keyup', event => false),
-    Observable.fromEvent(document, 'mouseup', event => false),
-    Observable.fromEvent(document, 'touchend', event => false),
-)
-    .startWith(false)
-    .distinctUntilChanged();
+const input = merge(
+    fromEvent(document, 'keydown', returnEvent),
+    fromEvent(document, 'mousedown', returnEvent),
+    fromEvent(document, 'touchstart', returnEvent),
+    fromEvent(document, 'keyup', event => false),
+    fromEvent(document, 'mouseup', event => false),
+    fromEvent(document, 'touchend', event => false),
+).pipe(
+    startWith(false),
+    distinctUntilChanged()
+);
 
 function returnEvent(event) {
     if (event.type === 'mousedown' || event.type === 'touchstart') {

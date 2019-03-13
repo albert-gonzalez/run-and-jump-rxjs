@@ -1,31 +1,30 @@
+const { resolve } = require('path');
+
 module.exports = {
     entry: {
         game: './src/js/main.js',
     },
     output: {
-        path: 'dist',
+        path: resolve(`${__dirname}/dist`),
         filename: '[name].bundle.js',
         publicPath: "dist/"
     },
     module: {
-        loaders: [
+        rules: [
             {
                 test: /\.js$/,
-                exclude: /(node_modules|bower_components)/,
-                loader: 'babel', // 'babel-loader' is also a valid name to reference
-                query: {
-                    presets: ['es2015']
-                }
+                exclude: /(node_modules)/,
+                loader: 'babel-loader'
             },
             {
                 test: /\.png/,
-                exclude: /(node_modules|bower_components)/,
+                exclude: /(node_modules)/,
                 loader: 'file-loader'
             },
             {
                 test: /\.scss$/,
-                loaders: ["style", "css", "sass"]
+                loaders: ["style-loader", "css-loader", "sass-loader"]
             }
         ]
     }
-}
+};

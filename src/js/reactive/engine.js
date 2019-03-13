@@ -3,6 +3,7 @@ import { MainCharacter } from "../model/main-character";
 import { Ground } from "../model/ground";
 import { PointCounter } from "../model/point-counter";
 import { loop, input } from "../reactive/observables";
+import { withLatestFrom, scan, filter } from "rxjs/operators";
 import { GameOverText } from "../model/game-over-text";
 
 const INIT_LEVEL = 2;
@@ -17,9 +18,11 @@ const ENTER_KEY = 'Enter';
 const ENTER_KEY_CODE = 13;
 
 function createGameLoop(defaultValues = {}) {
-    return loop.withLatestFrom(input)
-        .scan(calculateNextState, initGame(defaultValues))
-        .filter(isGameRunning);
+    return loop.pipe(
+        withLatestFrom(input),
+        scan(calculateNextState, initGame(defaultValues)),
+        filter(isGameRunning)
+    );
 }
 
 function initGame(defaultValues = {}) {
