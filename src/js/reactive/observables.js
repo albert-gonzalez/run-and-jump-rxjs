@@ -14,9 +14,9 @@ const input = merge(
   fromEvent(document, 'keydown', returnEvent),
   fromEvent(document, 'mousedown', returnEvent),
   fromEvent(document, 'touchstart', returnEvent),
-  fromEvent(document, 'keyup', event => false),
-  fromEvent(document, 'mouseup', event => false),
-  fromEvent(document, 'touchend', event => false)
+  fromEvent(document, 'keyup', () => false),
+  fromEvent(document, 'mouseup', () => false),
+  fromEvent(document, 'touchend', () => false)
 ).pipe(
   startWith(false),
   distinctUntilChanged()
