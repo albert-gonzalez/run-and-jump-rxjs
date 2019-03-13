@@ -1,0 +1,13 @@
+version: '3'
+services:
+  node:
+    image: node:10
+    volumes:
+      - ./:/src
+    expose:
+      - 8080
+    ports:
+      - 8080:8080
+    working_dir: /src
+    entrypoint: npm start
+
